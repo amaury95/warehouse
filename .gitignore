@@ -1,0 +1,4 @@
+build/*
+warehouse
+producer
+consumer
