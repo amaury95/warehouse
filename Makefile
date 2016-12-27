@@ -18,14 +18,19 @@ settings:
 build/test:
 	${CC} ${CC_FLAGS} -o build/test.o src/test.c
 
-build/warehouse:
-	${CC} ${CC_FLAGS} -o build/warehouse.o src/warehouse.c
+build/structs:
+	${CC} ${CC_FLAGS} -o build/structs.o src/structs.c
 
 build/json:
 	${CC} ${CC_FLAGS} -o build/json.o src/cJSON.c
 
-test: settings build/test build/warehouse build/json
-	${LD} build/test.o build/warehouse.o build/json.o -lm -o test
+
+build/warehouse:
+	${CC} ${CC_FLAGS} -o build/warehouse.o src/warehouse.c
+
+
+test: settings build/structs build/test build/json
+	${LD} build/structs.o build/test.o build/json.o -lm -o test
 	./test
 
 build: settings build/warehouse build/json
