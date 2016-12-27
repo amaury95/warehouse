@@ -15,8 +15,11 @@ clean:
 settings:
 	mkdir -p build
 
-build/warehouse: 
+build/warehouse:
 	${CC} ${CC_FLAGS} -o build/warehouse.o src/warehouse.c
 
-build: settings build/warehouse
-	${LD} build/warehouse.o -o warehouse
+build/json:
+	${CC} ${CC_FLAGS} -o build/json.o src/cJSON.c
+
+build: settings build/warehouse build/json
+	${LD} build/warehouse.o build/json.o -lm -o warehouse
