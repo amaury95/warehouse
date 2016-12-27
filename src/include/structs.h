@@ -11,7 +11,7 @@ typedef struct trie_t{
 }TRIE;
 
 TRIE *trie_new();
-char trie_pos(char c);
+int trie_pos(char c);
 void *trie_get(TRIE *trie, char *chain);
 int trie_contains(TRIE *trie, char *chain);
 int trie_add(TRIE *trie, char *chain, void *value);

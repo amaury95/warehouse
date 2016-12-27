@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "include/cJSON.h"
 #include "include/structs.h"
 
