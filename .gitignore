@@ -1,6 +1,7 @@
 *.sublime-project
 *.sublime-workspace
 build/*
+test
 warehouse
 producer
 consumer
