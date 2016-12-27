@@ -8,5 +8,10 @@ int main(int argc, char const *argv[]) {
   int b = trie_contains(trie, "warehouse");
   void *v = trie_get(trie, "warehouse");
   printf("%d %d %d\n", a, b, v);
+
+  for(char i = 0; i < 123; i++){
+    if(trie_pos(i) != i)
+      printf("%c\n", i);
+  }
   return 0;
 }
