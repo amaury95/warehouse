@@ -4,6 +4,10 @@
 
 #include "include/structs.h"
 
+/*
+TRIE Implementation
+TODO:HERE
+*/
 int trie_pos(char c){
   c = tolower(c);
   return c < 58 ? c - 48 : c < 123 ? c - 87 : c;
