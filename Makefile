@@ -30,8 +30,8 @@ build/warehouse:
 	${CC} ${CC_FLAGS} -o build/warehouse.o src/warehouse.c
 
 
-test: settings build/structs webserver build/test build/json
-	${LD} build/structs.o webserver.o build/test.o build/json.o -lm -o test
+test: settings build/structs build/test build/json
+	${LD} build/structs.o build/test.o build/json.o -lm -o test
 	./test
 
 build: settings build/webserver build/warehouse build/json
