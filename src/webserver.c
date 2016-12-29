@@ -8,49 +8,66 @@
 #include <signal.h>
 #include <poll.h>
 
+#include "include/cJSON.h"
 #include "include/structs.h"
 #include "include/webserver.h"
 
 void *server(void *argv)
 {
-  // int listenfd, connfd, clientlen;
-  // struct sockaddr_in clientaddr;
-  // // struct hostent *hp;
-  // // char *haddrp;
-  //
-  // listenfd = open_listenfd(port);
-  // while (1) {
-  //   clientlen = sizeof(clientaddr);
-  //   connfd = accept(listenfd, (struct sockaddr *)&clientaddr, (socklen_t *)&clientlen);
-  //
-  //   // hp = gethostbyaddr((const char *)&clientaddr.sin_addr.s_addr,
-  //   // sizeof(clientaddr.sin_addr.s_addr), AF_INET);
-  //   // haddrp = inet_ntoa(clientaddr.sin_addr);
-  //
-  //   /*POLL*/
-  //
-  //   char buff[MAXLINE];
-  //   read(connfd, buff, MAXLINE);
-  //
-  //   /*THREAD*/
-  //   //process(buff, products, connfd);
-  // }
+  struct server_param *params = (struct server_param *)argv;
+  
+  int listenfd, connfd, clientlen;
+
+  struct sockaddr_in clientaddr;
+ 
+  listenfd = open_listenfd(params->port);
+
+  while (1) 
+  {
+    clientlen = sizeof(clientaddr);
+
+    printf("Waitting for connections at %s\n", params->port);
+
+    connfd = accept(listenfd, (struct sockaddr *)&clientaddr, (socklen_t *)&clientlen);
+  
+    /*POLL*/
+  
+    char buff[MAXLINE];
+
+    read(connfd, buff, MAXLINE);
+  
+    cJSON *req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "client", "consumer");
+    cJSON_AddStringToObject(req, "product", "A");
+
+    char *requ = cJSON_Print(req);
+
+    cJSON *request = cJSON_CreateObject();
+    cJSON_AddStringToObject(request, "request", requ);
+    cJSON_AddStringToObject(request, "port", params->port);
+    cJSON_AddNumberToObject(request, "connfd", connfd);
+
+    /*THREAD*/
+    params->process(request);
+  }
   return NULL;
 }
 
-void *client(void *argv)
+char *client(char *hostname, char *port, char *request)
 {
-  // int clientfd = open_clientfd(host, port);
-  // write(clientfd, request, strlen(request));
-  //
-  // /*POLL*/
-  //
-  //
-  // char buff[MAXLINE];
-  // read(clientfd, buff, MAXLINE);
-  // close(clientfd);
+  int clientfd = open_clientfd(hostname, port);
 
-  return NULL;
+  write(clientfd, request, strlen(request));
+  
+  /*POLL*/  
+  
+  char *buff = malloc(MAXLINE);
+
+  read(clientfd, buff, MAXLINE);
+  
+  close(clientfd);
+
+  return buff;
 }
 
 int open_listenfd(char *port)

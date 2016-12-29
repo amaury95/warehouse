@@ -33,18 +33,11 @@ int main(int argc, char const *argv[])
 
 	trie_add(warehouse, "3000", trie_new());
 
-	// cJSON *req = cJSON_CreateObject();
-	// cJSON_AddStringToObject(req, "client", "consumer");
-	// cJSON_AddStringToObject(req, "product", "A");
+	struct server_param params;
+	params.port = "3000";
+	params.process = server_process;
 
-	// char *request = cJSON_Print(req);
-
-	// cJSON *params = cJSON_CreateObject();
-	// cJSON_AddStringToObject(params, "request", request);
-	// cJSON_AddStringToObject(params, "port", "3000");
-	// cJSON_AddNumberToObject(params, "connfd", 5);
-
-	// server_process(params);
+	server(&params);
 	
 	return 0;
 }
@@ -184,6 +177,8 @@ void *server_process(void *argv)
 	sem_post(&sem_warehouse);
 
 	char *rendered = cJSON_Print(respond);
+
+	printf("%s\n", rendered);
 
 	write(connfd, rendered, strlen(rendered));
 	
