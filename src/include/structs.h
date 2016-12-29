@@ -12,6 +12,15 @@ struct product{
 };
 
 /*
+SERVER Implementation
+TODO:HERE
+*/
+struct server_param{
+  char *port;
+  void *(*process)(void *);
+};
+
+/*
 STACH Implementation
 TODO:HERE
 */
