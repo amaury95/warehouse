@@ -15,9 +15,7 @@ struct product{
 TRIE Implementation
 TODO:HERE
 */
-#ifndef TRIE_LEN
 #define TRIE_LEN 36
-#endif
 
 typedef struct trie_t{
   void *value;
