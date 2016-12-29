@@ -11,46 +11,46 @@
 #include "include/structs.h"
 #include "include/webserver.h"
 
-char *server(char *port, TRIE *products, void(*process)(char *, TRIE *, int))
+void *server(void *argv)
 {
-  int listenfd, connfd, clientlen;
-  struct sockaddr_in clientaddr;
-  // struct hostent *hp;
-  // char *haddrp;
-
-  listenfd = open_listenfd(port);
-  while (1) {
-    clientlen = sizeof(clientaddr);
-    connfd = accept(listenfd, (struct sockaddr *)&clientaddr, (socklen_t *)&clientlen);
-
-    // hp = gethostbyaddr((const char *)&clientaddr.sin_addr.s_addr,
-    // sizeof(clientaddr.sin_addr.s_addr), AF_INET);
-    // haddrp = inet_ntoa(clientaddr.sin_addr);
-
-    /*POLL*/
-
-    char buff[MAXLINE];
-    read(connfd, buff, MAXLINE);
-
-    /*THREAD*/
-    process(buff, products, connfd);
-  }
-  exit(0);
+  // int listenfd, connfd, clientlen;
+  // struct sockaddr_in clientaddr;
+  // // struct hostent *hp;
+  // // char *haddrp;
+  //
+  // listenfd = open_listenfd(port);
+  // while (1) {
+  //   clientlen = sizeof(clientaddr);
+  //   connfd = accept(listenfd, (struct sockaddr *)&clientaddr, (socklen_t *)&clientlen);
+  //
+  //   // hp = gethostbyaddr((const char *)&clientaddr.sin_addr.s_addr,
+  //   // sizeof(clientaddr.sin_addr.s_addr), AF_INET);
+  //   // haddrp = inet_ntoa(clientaddr.sin_addr);
+  //
+  //   /*POLL*/
+  //
+  //   char buff[MAXLINE];
+  //   read(connfd, buff, MAXLINE);
+  //
+  //   /*THREAD*/
+  //   //process(buff, products, connfd);
+  // }
+  return NULL;
 }
 
-char *client(char *host, char *port, char *request, char *(*process)(char *))
+void *client(void *argv)
 {
-  int clientfd = open_clientfd(host, port);
-  write(clientfd, request, strlen(request));
+  // int clientfd = open_clientfd(host, port);
+  // write(clientfd, request, strlen(request));
+  //
+  // /*POLL*/
+  //
+  //
+  // char buff[MAXLINE];
+  // read(clientfd, buff, MAXLINE);
+  // close(clientfd);
 
-  /*POLL*/
-
-
-  char buff[MAXLINE];
-  read(clientfd, buff, MAXLINE);
-  close(clientfd);
-
-  return process(buff);
+  return NULL;
 }
 
 int open_listenfd(char *port)
