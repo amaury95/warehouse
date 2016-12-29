@@ -12,7 +12,7 @@ struct product{
 };
 
 /*
-WAREHOUSE Implementation
+STACH Implementation
 TODO:HERE
 */
 struct stack{
