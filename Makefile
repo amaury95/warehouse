@@ -34,5 +34,5 @@ test: settings build/structs build/test build/json
 	${LD} build/structs.o build/test.o build/json.o -lm -o test
 	./test
 
-build: settings build/webserver build/warehouse build/json
-	${LD} build/webserver.o -pthread build/warehouse.o build/json.o -lm -o warehouse
+build: settings build/structs build/webserver build/warehouse build/json
+	${LD} build/structs.o build/webserver.o -pthread build/warehouse.o build/json.o -lm -o warehouse
