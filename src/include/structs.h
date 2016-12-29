@@ -19,7 +19,7 @@ struct stack{
   int pos;
   int len;
   struct product **elements;
-}
+};
 
 struct stack *stack_new(int len);
 void *stack_pop(struct stack* stack);
