@@ -1,10 +1,57 @@
 #include <stdio.h>
 #include <netdb.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <netinet/in.h>
 
+#include <signal.h>
+#include <poll.h>
+
+#include "include/structs.h"
 #include "include/webserver.h"
+
+char *server(char *port, TRIE *products, void(*process)(char *, TRIE *, int))
+{
+  int listenfd, connfd, clientlen;
+  struct sockaddr_in clientaddr;
+  // struct hostent *hp;
+  // char *haddrp;
+
+  listenfd = open_listenfd(port);
+  while (1) {
+    clientlen = sizeof(clientaddr);
+    connfd = accept(listenfd, (struct sockaddr *)&clientaddr, (socklen_t *)&clientlen);
+
+    // hp = gethostbyaddr((const char *)&clientaddr.sin_addr.s_addr,
+    // sizeof(clientaddr.sin_addr.s_addr), AF_INET);
+    // haddrp = inet_ntoa(clientaddr.sin_addr);
+
+    /*POLL*/
+
+    char buff[MAXLINE];
+    read(connfd, buff, MAXLINE);
+
+    /*THREAD*/
+    process(buff, products, connfd);
+  }
+  exit(0);
+}
+
+char *client(char *host, char *port, char *request, char *(*process)(char *))
+{
+  int clientfd = open_clientfd(host, port);
+  write(clientfd, request, strlen(request));
+
+  /*POLL*/
+
+
+  char buff[MAXLINE];
+  read(clientfd, buff, MAXLINE);
+  close(clientfd);
+
+  return process(buff);
+}
 
 int open_listenfd(char *port)
 {

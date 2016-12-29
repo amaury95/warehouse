@@ -2,6 +2,12 @@
 #define WEBSERVER_H
 
 #define SIZE_LISTEN_QUEUE 1024
-int open_listen_fd(char *port);
+#define MAXLINE 4096
+
+char *server(char *port, TRIE *products, void(*process)(char *, TRIE *, int));
+char *client(char *host, char *port, char *request, char *(*process)(char *));
+
+int open_listenfd(char *port);
+int open_clientfd(char *hostname, char *port);
 
 #endif //WEBSERVER_H
