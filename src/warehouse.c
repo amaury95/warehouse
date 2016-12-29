@@ -27,15 +27,25 @@ int main(int argc, char const *argv[])
 	sem_init(&sem_warehouse, 0, 1);
 	sem_init(&sem_capacity, 0, 1);
 
-	// struct ports_t{
-	// 	int count = 3;
-	// 	char *portno[] = {"3000", "4000", "5000"};
-	// }ports;
-	//
-	// for(int i = 0; i < ports.count; i++)
-	// 	/*thread*/
-	// 	server(ports.portno[i]);
+	warehouse = trie_new();
+	capacity.max = 1;
+	capacity.pos = 0;
 
+	trie_add(warehouse, "3000", trie_new());
+
+	// cJSON *req = cJSON_CreateObject();
+	// cJSON_AddStringToObject(req, "client", "consumer");
+	// cJSON_AddStringToObject(req, "product", "A");
+
+	// char *request = cJSON_Print(req);
+
+	// cJSON *params = cJSON_CreateObject();
+	// cJSON_AddStringToObject(params, "request", request);
+	// cJSON_AddStringToObject(params, "port", "3000");
+	// cJSON_AddNumberToObject(params, "connfd", 5);
+
+	// server_process(params);
+	
 	return 0;
 }
 
@@ -82,7 +92,7 @@ int can_product(char *port, char *product)
 	int cap = capacity.max - capacity.pos;
 
 	sem_post(&sem_capacity);
-	
+
 	if(cap > 0 && (stack = get_stack(port, product)) != NULL )
 
 		return stack->pos != stack->len;
@@ -125,25 +135,25 @@ void set_product(char *port, char *product, cJSON *value)
 }
 
 void *server_process(void *argv)
-{	
+{
 	cJSON *args, *request, *respond;
-
+	
 	args = (cJSON*)argv;
 	
 	request = cJSON_Parse(cJSON_GetObjectItem(args, "request")->valuestring);
 	
 	respond = cJSON_CreateObject();
-
+	
 	char *port = cJSON_GetObjectItem(args, "port")->valuestring;
 	
 	int connfd = cJSON_GetObjectItem(args, "connfd")->valueint;
-
+ 
 	sem_wait(&sem_warehouse);
 
 	if(strcmp(cJSON_GetObjectItem(request, "client")->valuestring, "consumer") == 0)
 	{
 		char *product = cJSON_GetObjectItem(request, "product")->valuestring;
-		 
+				 
 		if(has_product(port, product))
 		{
 			cJSON_AddStringToObject(respond, "result", "accept");
