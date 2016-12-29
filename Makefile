@@ -23,15 +23,16 @@ build/structs:
 
 build/json:
 	${CC} ${CC_FLAGS} -o build/json.o src/cJSON.c
-
+build/webserver:
+	${CC} ${CC_FLAGS} -o build/webserver.o src/webserver.c
 
 build/warehouse:
 	${CC} ${CC_FLAGS} -o build/warehouse.o src/warehouse.c
 
 
-test: settings build/structs build/test build/json
-	${LD} build/structs.o build/test.o build/json.o -lm -o test
+test: settings build/structs webserver build/test build/json
+	${LD} build/structs.o webserver.o build/test.o build/json.o -lm -o test
 	./test
 
-build: settings build/warehouse build/json
-	${LD} build/warehouse.o build/json.o -lm -o warehouse
+build: settings build/webserver build/warehouse build/json
+	${LD} build/webserver.o build/warehouse.o build/json.o -lm -o warehouse
