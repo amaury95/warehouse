@@ -3,6 +3,25 @@
 #include <ctype.h>
 
 #include "include/structs.h"
+/*
+WAREHOUSE Implementation
+TODO:HERE
+*/
+struct stack *stack_new(int len){
+  struct stack *stack = malloc(sizeof(struct stack));
+  stack->elements = malloc(sizeof(void*) * len);
+  stack->len = len;
+  stack->pos = 0;
+  return stack;
+}
+void *stack_pop(struct stack* stack){
+  if(stack->pos-- == 0)return NULL;
+  return stack->elements[stack->pos];
+}
+int stack_push(struct stack *stack, void *product){
+  if(stack->pos == stack->len)return 0;
+  return (stack->elements[stack->pos++] = product) != NULL;
+}
 
 /*
 TRIE Implementation
