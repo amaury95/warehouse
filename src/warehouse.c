@@ -76,8 +76,14 @@ int has_product(char *port, char *product)
 int can_product(char *port, char *product)
 {
 	struct stack *stack;
+	
+	sem_wait(&sem_capacity);
 
-	if( (stack = get_stack(port, product)) != NULL )
+	int cap = capacity.max - capacity.pos;
+
+	sem_post(&sem_capacity);
+	
+	if(cap > 0 && (stack = get_stack(port, product)) != NULL )
 
 		return stack->pos != stack->len;
 
@@ -89,8 +95,15 @@ cJSON *get_product(char *port, char *product)
 	struct stack *stack;
 
 	if( (stack = get_stack(port, product)) != NULL )
+	{
+		sem_wait(&sem_capacity);
 
+		capacity.pos--;
+
+		sem_post(&sem_capacity);		
+		
 		return stack_pop(stack);
+	}
 
 	return NULL;
 }
@@ -100,8 +113,15 @@ void set_product(char *port, char *product, cJSON *value)
 	struct stack *stack;
 
 	if( (stack = get_stack(port, product)) != NULL )
+	{
+		sem_wait(&sem_capacity);
 
+		capacity.pos++;
+
+		sem_post(&sem_capacity);
+		
 		stack_push(stack, value);
+	}
 }
 
 void *server_process(void *argv)
