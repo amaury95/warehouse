@@ -21,7 +21,7 @@ int main(int argc, char const *argv[])
 
     struct thread server;
     server.port = "3000";
-    server.hostname = "192.186.99.100";
+    server.hostname = "192.168.99.100";
 
     stack_push(servers, &server);
     
