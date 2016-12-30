@@ -28,17 +28,27 @@ int main(int argc, char const *argv[])
 	sem_init(&sem_capacity, 0, 1);
 
 	warehouse = trie_new();
-	capacity.max = 1;
+	capacity.max = 3;
 	capacity.pos = 0;
 
-	trie_add(warehouse, "3000", trie_new());
+	int portslen = 1;
+	char *ports[] = {"3000", "3001"};
 
-	struct server_param params;
-	params.port = "3000";
-	params.process = server_process;
+	for(int i = 0; i < portslen; i++)
+	{ 
+		pthread_t tid;
 
-	server(&params);
+		trie_add(warehouse, ports[i], trie_new());
+
+		struct thread params;
+		params.port = ports[i];
+		params.process = server_process;
+		
+		pthread_create(&tid, NULL, server, &params);
+	}
 	
+	pthread_exit(NULL);
+
 	return 0;
 }
 

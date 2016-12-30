@@ -15,7 +15,7 @@
 
 void *server(void *argv)
 {
-  struct server_param *params = (struct server_param *)argv;
+  struct thread *params = (struct thread *)argv;
   
   int listenfd, connfd, clientlen;
 
@@ -54,11 +54,13 @@ void *server(void *argv)
   return NULL;
 }
 
-char *client(char *hostname, char *port, char *request)
+void *client(void *argv)
 {
-  int clientfd = open_clientfd(hostname, port);
+  struct thread *params = (struct thread *)argv;
 
-  write(clientfd, request, strlen(request));
+  int clientfd = open_clientfd(params->hostname, params->port);
+
+  write(clientfd, params->request, strlen(params->request));
   
   /*POLL*/  
   
@@ -68,7 +70,9 @@ char *client(char *hostname, char *port, char *request)
   
   close(clientfd);
 
-  return buff;
+  params->process(buff);
+
+  return NULL;
 }
 
 int open_listenfd(char *port)

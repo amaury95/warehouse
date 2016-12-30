@@ -5,7 +5,7 @@
 #define MAXLINE 4096
 
 void *server(void *);
-char *client(char *, char *, char *);
+void *client(void *);
 
 int open_listenfd(char *port);
 int open_clientfd(char *hostname, char *port);

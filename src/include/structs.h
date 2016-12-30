@@ -11,17 +11,25 @@ struct product{
   char product_content[4083];
 };
 
+struct demand{
+  int cant;
+  int pend;
+  char *product;
+}
+
 /*
-SERVER Implementation
+PARAM Implementation
 TODO:HERE
 */
-struct server_param{
+struct thread{
   char *port;
+  char *hostname;
+  char *request;
   void *(*process)(void *);
 };
 
 /*
-STACH Implementation
+STACK Implementation
 TODO:HERE
 */
 struct stack{
