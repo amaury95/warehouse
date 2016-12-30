@@ -19,8 +19,6 @@ sem_t sem_products;
 
 void *generator(void *params)
 {    
-    static int id = 1;
-
     while(1)
     {
         sem_wait(&sem_products);
@@ -32,6 +30,8 @@ void *generator(void *params)
              
         sem_post(&sem_products);
         
+        printf("Generated\n");
+
         sleep(1); 
     } 
 }
@@ -52,9 +52,18 @@ int main(int argc, char const *argv[])
 
     stack_push(servers, &server);
  
+    struct production prod;
+    prod.id = "A";
+    prod.generate = 2;
+    prod.pendding = 0;
+
+    stack_push(products, &prod);
+
     //Starting generator thread
     pthread_t ptid;
     pthread_create(&ptid, NULL, generator, NULL);
+
+    static int ppid = 1;
 
     while(1){
         sem_wait(&sem_products);
@@ -62,12 +71,25 @@ int main(int argc, char const *argv[])
         for(int i = 0; i < products->pos; i++)
 
             if(((struct production *)products->elements[i])->pendding > 0)
-            {
-                
+            
+                for(int j = 0; j < servers->pos; j++){
+                    
+                    struct product product;
+                    product.product_id = ppid++;
+                    strcpy(product.provider_id, "AD");
+                    strcpy(product.product_name, ((struct production *)products->elements[i])->id);
+                    strcpy(product.product_content, "basura");
 
-                pthread_t pid;
-                pthread_create(&pid, NULL, send, &args);
-            }                         
+                    struct thread args;
+                    args.port = ((struct thread *)servers->elements[j])->port;
+                    args.hostname = ((struct thread *)servers->elements[j])->hostname;
+                    args.request = conform_request(product);
+                    args.process = client_process;
+
+                    printf("%s\n", args.request);
+
+                    if(strcmp((char *)client(&args),"true")) break;
+                }
              
         sem_post(&sem_products);
     }
@@ -99,12 +121,35 @@ cJSON *product_to_json(struct product p)
 
 void *client_process(void *argv)
 {
-    cJSON *request = cJSON_Parse((char *)argv);
+    cJSON *response = cJSON_Parse((char *)argv);
 
-    if(request!=NULL)
-    {
+    char *retval = "false";
 
-    }
+    printf("RESPONSE %s\n", response);
 
-    return NULL;
+    if(response != NULL)
+    
+        if(strcmp(cJSON_GetObjectItem(response, "result")->valuestring, "accept") == 0)
+        {
+            char *id = cJSON_GetObjectItem(response, "pid")->valuestring;
+
+            
+
+            sem_wait(&sem_products);
+        
+            for(int i = 0; i < products->pos; i++)
+
+                if(strcmp(((struct production *)products->elements[i])->id, id) == 0)
+                {
+                    ((struct production *)products->elements[i])->pendding--;
+                }                         
+                
+            sem_post(&sem_products);
+
+            retval = "true";
+
+            printf("Send %s\n", id);
+        }
+    
+    return retval;
 }
