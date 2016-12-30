@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <netinet/in.h>
+#include <pthread.h>
 
 #include <signal.h>
 #include <poll.h>
@@ -47,8 +48,8 @@ void *server(void *argv)
     cJSON_AddStringToObject(request, "port", params->port);
     cJSON_AddNumberToObject(request, "connfd", connfd);
 
-    /*THREAD*/
-    params->process(request);
+    pthread_t tid;
+    pthread_create(&tid, NULL, params->process, request);
   }
   return NULL;
 }
