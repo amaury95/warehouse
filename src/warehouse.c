@@ -28,21 +28,29 @@ int main(int argc, char const *argv[])
 	sem_init(&sem_capacity, 0, 1);
 
 	warehouse = trie_new();
-	capacity.max = 3;
+	capacity.max = 10;
 	capacity.pos = 0;
 
 	int portslen = 1;
 	char *ports[] = {"3000", "3001"};
 
-	for(int i = 0; i < portslen; i++)
-	{ 
-		pthread_t tid;
+	int prodslen = 2;
+	char *prods[] = {"A", "B"};
+	int capacit[] = { 2 ,  3 };
 
-		trie_add(warehouse, ports[i], trie_new());
+	for(int i = 0; i < portslen; i++)
+	{
+		TRIE *ptrie = trie_new();
+		trie_add(warehouse, ports[i], ptrie);
+		
+		for(int j = 0; j < prodslen; j++)
+			trie_add(ptrie, prods[j], stack_new(capacit[j]));
 
 		struct thread params;
 		params.port = ports[i];
 		params.process = server_process;
+
+		pthread_t tid;
 		
 		pthread_create(&tid, NULL, server, &params);
 	}
