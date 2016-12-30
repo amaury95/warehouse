@@ -10,56 +10,68 @@
 struct stack *servers;
 struct stack *products;
 
+sem_t sem_servers;
+sem_t sem_products;
+
 #include "include/cJSON.h"
 #include "include/webserver.h"
 #include "include/producer.h"
 
+void *generator(void *params)
+{    
+    static int id = 1;
+
+    while(1)
+    {
+        sem_wait(&sem_products);
+        
+        for(int i = 0; i < products->pos; i++)
+
+            ((struct production *)products->elements[i])->pendding += 
+            ((struct production *)products->elements[i])->generate;                         
+             
+        sem_post(&sem_products);
+        
+        sleep(1); 
+    } 
+}
+
 int main(int argc, char const *argv[])
 {
+    //Initialize local variables
+    sem_init(&sem_servers, 0, 1);
+	sem_init(&sem_products, 0, 1);
+
     servers = stack_new(STACK_MAX);
     products = stack_new(STACK_MAX);
 
+    //Simuling parameters
     struct thread server;
     server.port = "3000";
     server.hostname = "192.168.99.100";
 
     stack_push(servers, &server);
-    
-    while(1){
-        struct product product = get_product();
-        char *request = conform_request(product);
-        for(int i = 0; i < servers->pos; i++){
-            struct thread param;
-            param.hostname = ((struct thread *)servers->elements[i])->hostname; 
-            param.port = ((struct thread *)servers->elements[i])->port;
-            param.request = request;
-            param.process = client_process;
+ 
+    //Starting generator thread
+    pthread_t ptid;
+    pthread_create(&ptid, NULL, generator, NULL);
 
-            pthread_t tid;
-            pthread_create(&tid, NULL, client, &param);
-        }
-        sleep(1);
+    while(1){
+        sem_wait(&sem_products);
+        
+        for(int i = 0; i < products->pos; i++)
+
+            if(((struct production *)products->elements[i])->pendding > 0)
+            {
+                
+
+                pthread_t pid;
+                pthread_create(&pid, NULL, send, &args);
+            }                         
+             
+        sem_post(&sem_products);
     }
     return 0;
-}
-
-void *client_process(void *argv){
-    cJSON *request = cJSON_Parse((char *)argv);
-
-    printf("%s\n", cJSON_Print(request));
-
-    pthread_detach(pthread_self());
-    return NULL;
-}
-
-struct product get_product()
-{
-    struct product p;
-    p.product_id = 10;
-    strcpy(p.provider_id, "A0");
-    strcpy(p.product_name, "A0");
-    strcpy(p.product_content, "Ilikedressingup");
-    return p;
 }
 
 char *conform_request(struct product product)
@@ -84,3 +96,15 @@ cJSON *product_to_json(struct product p)
   return json;
 }
 
+
+void *client_process(void *argv)
+{
+    cJSON *request = cJSON_Parse((char *)argv);
+
+    if(request!=NULL)
+    {
+
+    }
+
+    return NULL;
+}
