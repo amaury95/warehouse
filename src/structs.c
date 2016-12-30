@@ -2,7 +2,9 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "include/cJSON.h"
 #include "include/structs.h"
+
 /*
 WAREHOUSE Implementation
 TODO:HERE
@@ -90,6 +92,6 @@ void *trie_get(TRIE *trie, char *chain)
   if(trie_contains(trie, chain))
 
     return trie_get_p(trie, chain, 0, strlen(chain));
-    
+
   return NULL;
 }

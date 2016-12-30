@@ -11,11 +11,15 @@ struct product{
   char product_content[4083];
 };
 
+/*
+PARAM Implementation
+TODO:HERE
+*/
 struct demand{
   int cant;
   int pend;
   char *product;
-}
+};
 
 /*
 PARAM Implementation
@@ -32,6 +36,8 @@ struct thread{
 STACK Implementation
 TODO:HERE
 */
+#define STACK_MAX 1024
+
 struct stack{
   int pos;
   int len;
