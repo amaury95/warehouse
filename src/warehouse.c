@@ -174,6 +174,8 @@ void *server_process(void *argv)
 			cJSON *value = get_product(port, product);
 			
 			cJSON_AddItemToObject(respond, "value", value);
+
+			printf("Sended %s\n", product);
 		}
 		else
 			cJSON_AddStringToObject(respond, "result", "dennied");
@@ -191,6 +193,8 @@ void *server_process(void *argv)
 			cJSON_AddStringToObject(respond, "id", product);
 
 			set_product(port, product, (cJSON*)cJSON_GetObjectItem(request, "value"));
+			
+			printf("Saved %s\n", product);
 		}
 		else
 			cJSON_AddStringToObject(respond, "result", "dennied");
@@ -199,8 +203,6 @@ void *server_process(void *argv)
 	sem_post(&sem_warehouse);
 
 	char *rendered = cJSON_Print(respond);
-
-	printf("%s\n", rendered);
 
 	write(connfd, rendered, strlen(rendered));
 	
