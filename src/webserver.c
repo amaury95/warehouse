@@ -34,17 +34,10 @@ void *server(void *argv)
     /*POLL*/
   
     char buff[MAXLINE];
-
     read(connfd, buff, MAXLINE);
-  
-    cJSON *req = cJSON_CreateObject();
-    cJSON_AddStringToObject(req, "client", "consumer");
-    cJSON_AddStringToObject(req, "product", "A");
-
-    char *requ = cJSON_Print(req);
-
+   
     cJSON *request = cJSON_CreateObject();
-    cJSON_AddStringToObject(request, "request", requ);
+    cJSON_AddStringToObject(request, "request", buff);
     cJSON_AddStringToObject(request, "port", params->port);
     cJSON_AddNumberToObject(request, "connfd", connfd);
 
