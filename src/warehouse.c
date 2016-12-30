@@ -168,6 +168,8 @@ void *server_process(void *argv)
 		if(has_product(port, product))
 		{
 			cJSON_AddStringToObject(respond, "result", "accept");
+
+			cJSON_AddStringToObject(respond, "id", product);
 			
 			cJSON *value = get_product(port, product);
 			
@@ -186,6 +188,8 @@ void *server_process(void *argv)
 		{
 			cJSON_AddStringToObject(respond, "result", "accept");
 			
+			cJSON_AddStringToObject(respond, "id", product);
+
 			set_product(port, product, (cJSON*)cJSON_GetObjectItem(request, "value"));
 		}
 		else
