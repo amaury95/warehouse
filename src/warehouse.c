@@ -21,6 +21,13 @@ sem_t sem_capacity;
 #include "include/webserver.h"
 #include "include/warehouse.h"
 
+//Structs to fill with tokenizer input
+int   count = 2;
+char* production_id[] = {"A", "B"};
+int   production_sz[] = { 9 ,  8 };
+
+int   pcount = 1;
+char* ports[] = {"3000"};
 
 int main(int argc, char const *argv[])
 {
@@ -31,27 +38,19 @@ int main(int argc, char const *argv[])
 	capacity.max = 10;
 	capacity.pos = 0;
 
-	int portslen = 1;
-	char *ports[] = {"3000"};
-
-	int prodslen = 2;
-	char *prods[] = {"A", "B"};
-	int capacit[] = { 2 ,  3 };
-
-	for(int i = 0; i < portslen; i++)
+	for(int i = 0; i < pcount; i++)
 	{
 		TRIE *ptrie = trie_new();
 		trie_add(warehouse, ports[i], ptrie);
 		
-		for(int j = 0; j < prodslen; j++)
-			trie_add(ptrie, prods[j], stack_new(capacit[j]));
+		for(int j = 0; j < count; j++)
+			trie_add(ptrie, production_id[j], stack_new(production_sz[j]));
 
 		struct thread params;
 		params.port = ports[i];
 		params.process = server_process;
 
-		pthread_t tid;
-		
+		pthread_t tid;		
 		pthread_create(&tid, NULL, server, &params);
 	}
 	
