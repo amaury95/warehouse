@@ -11,6 +11,12 @@ struct product{
   char product_content[4083];
 };
 
+struct production{
+  char *id;
+  int generate;
+  int pendding;
+}
+
 /*
 PARAM Implementation
 TODO:HERE
