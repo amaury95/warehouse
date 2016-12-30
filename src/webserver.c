@@ -61,9 +61,9 @@ void *client(void *argv)
   
   close(clientfd);
 
-  params->process(buff);
-
-  return NULL;
+  pthread_detach(pthread_self());
+  
+  return params->process(buff);;
 }
 
 int open_listenfd(char *port)
