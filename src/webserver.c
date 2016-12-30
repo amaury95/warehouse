@@ -27,8 +27,6 @@ void *server(void *argv)
   {
     clientlen = sizeof(clientaddr);
 
-    printf("Waitting for connections at %s\n", params->port);
-
     connfd = accept(listenfd, (struct sockaddr *)&clientaddr, (socklen_t *)&clientlen);
   
     /*POLL*/
