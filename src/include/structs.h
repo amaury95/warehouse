@@ -15,16 +15,6 @@ struct product{
 PARAM Implementation
 TODO:HERE
 */
-struct demand{
-  int cant;
-  int pend;
-  char *product;
-};
-
-/*
-PARAM Implementation
-TODO:HERE
-*/
 struct thread{
   char *port;
   char *hostname;
