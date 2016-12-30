@@ -32,7 +32,7 @@ int main(int argc, char const *argv[])
 	capacity.pos = 0;
 
 	int portslen = 1;
-	char *ports[] = {"3000", "3001"};
+	char *ports[] = {"3000"};
 
 	int prodslen = 2;
 	char *prods[] = {"A", "B"};
