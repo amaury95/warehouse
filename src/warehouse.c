@@ -142,11 +142,12 @@ void *server_process(void *argv)
 	cJSON *args, *request, *respond;
 	
 	args = (cJSON*)argv;
-	
+
 	request = cJSON_Parse(cJSON_GetObjectItem(args, "request")->valuestring);
 	
 	respond = cJSON_CreateObject();
 	
+
 	char *port = cJSON_GetObjectItem(args, "port")->valuestring;
 	
 	int connfd = cJSON_GetObjectItem(args, "connfd")->valueint;
@@ -172,8 +173,8 @@ void *server_process(void *argv)
 
 	if(strcmp(cJSON_GetObjectItem(request, "client")->valuestring, "producer") == 0)
 	{
-		char *product = cJSON_GetObjectItem(request, "product")->valuestring;
-		 
+		char *product = cJSON_GetObjectItem(request, "type")->valuestring;
+		
 		if(can_product(port, product))
 		{
 			cJSON_AddStringToObject(respond, "result", "accept");
