@@ -15,7 +15,7 @@ struct production{
   char *id;
   int generate;
   int pendding;
-}
+};
 
 /*
 PARAM Implementation
