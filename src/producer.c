@@ -25,13 +25,16 @@ void *generator(void *params)
         
         for(int i = 0; i < products->pos; i++)
 
-            ((struct production *)products->elements[i])->pendding += 
-            ((struct production *)products->elements[i])->generate;                         
+            if(((struct production *)products->elements[i])->pendding == 0)
+            {
+                ((struct production *)products->elements[i])->pendding += 
+                ((struct production *)products->elements[i])->generate;   
+                for(int j = 0; j < ((struct production *)products->elements[i])->generate; j++)
+                    printf("[ prod ] %s\n", ((struct production *)products->elements[i])->id);
+            }                      
              
         sem_post(&sem_products);
         
-        printf("Generated\n");
-
         sleep(1); 
     } 
 }
@@ -66,8 +69,7 @@ int main(int argc, char const *argv[])
     static int ppid = 1;
 
     while(1){
-        sem_wait(&sem_products);
-        
+
         for(int i = 0; i < products->pos; i++)
 
             if(((struct production *)products->elements[i])->pendding > 0)
@@ -75,7 +77,7 @@ int main(int argc, char const *argv[])
                 for(int j = 0; j < servers->pos; j++){
                     
                     struct product product;
-                    product.product_id = ppid++;
+                    product.product_id = ppid;
                     strcpy(product.provider_id, "AD");
                     strcpy(product.product_name, ((struct production *)products->elements[i])->id);
                     strcpy(product.product_content, "basura");
@@ -86,12 +88,8 @@ int main(int argc, char const *argv[])
                     args.request = conform_request(product);
                     args.process = client_process;
 
-                    printf("%s\n", args.request);
-
-                    if(strcmp((char *)client(&args),"true")) break;
+                    if(strcmp((char *)client(&args),"true")) { ppid ++; break;}
                 }
-             
-        sem_post(&sem_products);
     }
     return 0;
 }
@@ -125,30 +123,25 @@ void *client_process(void *argv)
 
     char *retval = "false";
 
-    printf("RESPONSE %s\n", response);
-
     if(response != NULL)
     
         if(strcmp(cJSON_GetObjectItem(response, "result")->valuestring, "accept") == 0)
         {
-            char *id = cJSON_GetObjectItem(response, "pid")->valuestring;
-
-            
+            char *id = cJSON_GetObjectItem(response, "id")->valuestring;
 
             sem_wait(&sem_products);
-        
+
             for(int i = 0; i < products->pos; i++)
 
                 if(strcmp(((struct production *)products->elements[i])->id, id) == 0)
-                {
+                 
                     ((struct production *)products->elements[i])->pendding--;
-                }                         
-                
-            sem_post(&sem_products);
 
+            sem_post(&sem_products);     
+                
             retval = "true";
 
-            printf("Send %s\n", id);
+            printf("[ sent ] %s\n", id);
         }
     
     return retval;

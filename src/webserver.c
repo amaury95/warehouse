@@ -13,6 +13,13 @@
 #include "include/structs.h"
 #include "include/webserver.h"
 
+int balanced_keys(char *chain){
+  int key = 0;
+  for(int i = 0; i < strlen(chain); i++)
+    key += chain[i] == '{' ? 1 : chain[i] == '}' ? -1 : 0;
+  return key == 0;
+}
+
 void *server(void *argv)
 {
   struct thread *params = (struct thread *)argv;
@@ -30,10 +37,11 @@ void *server(void *argv)
     connfd = accept(listenfd, (struct sockaddr *)&clientaddr, (socklen_t *)&clientlen);
   
     /*POLL*/
-  
+        
     char buff[MAXLINE];
-    read(connfd, buff, MAXLINE);
-   
+    do read(connfd, buff, MAXLINE);
+    while (strlen(buff) > 0 && !balanced_keys(buff));
+
     cJSON *request = cJSON_CreateObject();
     cJSON_AddStringToObject(request, "request", buff);
     cJSON_AddStringToObject(request, "port", params->port);
@@ -47,6 +55,8 @@ void *server(void *argv)
 
 void *client(void *argv)
 {
+  pthread_detach(pthread_self());
+  
   struct thread *params = (struct thread *)argv;
 
   int clientfd = open_clientfd(params->hostname, params->port);
@@ -54,15 +64,13 @@ void *client(void *argv)
   write(clientfd, params->request, strlen(params->request));
   
   /*POLL*/  
+    
+  char buff[MAXLINE];
+  do read(clientfd, buff, MAXLINE);
+  while (strlen(buff) > 0 && !balanced_keys(buff));
   
-  char *buff = malloc(MAXLINE);
 
-  read(clientfd, buff, MAXLINE);
-  
   close(clientfd);
-
-  pthread_detach(pthread_self());
-  
   return params->process(buff);
 }
 
