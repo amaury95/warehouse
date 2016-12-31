@@ -178,9 +178,6 @@ void *server_process(void *argv)
 		}
 		else
 			cJSON_AddStringToObject(respond, "result", "dennied");
-
-		printf("end consumer\n");
-		
 	}
 
 	if(strcmp(cJSON_GetObjectItem(request, "client")->valuestring, "producer") == 0)
