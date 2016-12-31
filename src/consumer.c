@@ -20,7 +20,7 @@ int ppid = 1;
 #include "include/consumer.h"
 
 void *generator(void *params)
-{    
+{
     while(1)
     {
         sem_wait(&sem_products);
