@@ -152,8 +152,7 @@ void *server_process(void *argv)
 
 	request = cJSON_Parse(cJSON_GetObjectItem(args, "request")->valuestring);
 	
-	respond = cJSON_CreateObject();
-	
+	respond = cJSON_CreateObject();	
 
 	char *port = cJSON_GetObjectItem(args, "port")->valuestring;
 	
@@ -175,7 +174,7 @@ void *server_process(void *argv)
 			
 			cJSON_AddItemToObject(respond, "value", value);
 
-			printf("Sended %s\n", product);
+			printf("---> %s\n", product);
 		}
 		else
 			cJSON_AddStringToObject(respond, "result", "dennied");
@@ -194,7 +193,7 @@ void *server_process(void *argv)
 
 			set_product(port, product, (cJSON*)cJSON_GetObjectItem(request, "value"));
 			
-			printf("Saved %s\n", product);
+			printf("<--- %s\n", product);
 		}
 		else
 			cJSON_AddStringToObject(respond, "result", "dennied");
