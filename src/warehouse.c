@@ -24,7 +24,7 @@ sem_t sem_capacity;
 //Structs to fill with tokenizer input
 int   count = 2;
 char* production_id[] = {"A", "B"};
-int   production_sz[] = { 9 ,  8 };
+int   production_sz[] = { 9 ,  100 };
 
 int   pcount = 1;
 char* ports[] = {"3000"};
@@ -35,7 +35,7 @@ int main(int argc, char const *argv[])
 	sem_init(&sem_capacity, 0, 1);
 
 	warehouse = trie_new();
-	capacity.max = 10;
+	capacity.max = 200;
 	capacity.pos = 0;
 
 	for(int i = 0; i < pcount; i++)

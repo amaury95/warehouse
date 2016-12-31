@@ -49,10 +49,8 @@ void *singlep(void *args)
 
         if(((struct production *)products->elements[i])->pendding > 0)
                 
-            for(int j = 0; j < servers->pos; j++){
-                
-                printf("requesting..\n");
-
+            for(int j = 0; j < servers->pos; j++)
+            {
                 struct product product;
                 product.product_id = ppid;
                 strcpy(product.provider_id, "AD");
