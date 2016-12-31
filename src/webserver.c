@@ -40,7 +40,7 @@ void *server(void *argv)
         
     char buff[MAXLINE];
     do read(connfd, buff, MAXLINE);
-    while (strlen(buff) > 0 && !balanced_keys(buff));
+    while (!balanced_keys(buff));
 
     cJSON *request = cJSON_CreateObject();
     cJSON_AddStringToObject(request, "request", buff);
@@ -67,7 +67,7 @@ void *client(void *argv)
     
   char buff[MAXLINE];
   do read(clientfd, buff, MAXLINE);
-  while (strlen(buff) > 0 && !balanced_keys(buff));
+  while (!balanced_keys(buff));
   
 
   close(clientfd);
