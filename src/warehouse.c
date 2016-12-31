@@ -149,15 +149,20 @@ void *server_process(void *argv)
 	cJSON *args, *request, *respond;
 	
 	args = (cJSON*)argv;
-
-	request = cJSON_Parse(cJSON_GetObjectItem(args, "request")->valuestring);
 	
 	respond = cJSON_CreateObject();	
 
 	char *port = cJSON_GetObjectItem(args, "port")->valuestring;
 	
 	int connfd = cJSON_GetObjectItem(args, "connfd")->valueint;
- 
+
+	//POLL
+	char buff[MAXLINE];
+
+    read(connfd, buff, MAXLINE);
+	//END POLL
+	request = cJSON_Parse(buff);
+
 	sem_wait(&sem_warehouse);
 
 	if(strcmp(cJSON_GetObjectItem(request, "client")->valuestring, "consumer") == 0)

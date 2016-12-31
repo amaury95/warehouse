@@ -36,14 +36,7 @@ void *server(void *argv)
 
     connfd = accept(listenfd, (struct sockaddr *)&clientaddr, (socklen_t *)&clientlen);
   
-    /*POLL*/
-        
-    char buff[MAXLINE];
-    do read(connfd, buff, MAXLINE);
-    while (!balanced_keys(buff));
-
     cJSON *request = cJSON_CreateObject();
-    cJSON_AddStringToObject(request, "request", buff);
     cJSON_AddStringToObject(request, "port", params->port);
     cJSON_AddNumberToObject(request, "connfd", connfd);
 
@@ -66,9 +59,7 @@ void *client(void *argv)
   /*POLL*/  
     
   char buff[MAXLINE];
-  do read(clientfd, buff, MAXLINE);
-  while (!balanced_keys(buff));
-  
+  read(clientfd, buff, MAXLINE);
 
   close(clientfd);
   return params->process(buff);
