@@ -33,6 +33,9 @@ build/warehouse: src/warehouse.c
 build/producer: src/producer.c
 	${CC} ${CC_FLAGS} -o build/producer.o src/producer.c
 
+build/consumer: src/consumer.c
+	${CC} ${CC_FLAGS} -o build/consumer.o src/consumer.c
+
 test: settings build/structs build/test build/json
 	${LD} build/structs.o build/test.o build/json.o -lm -o test
 	./test
@@ -43,4 +46,7 @@ build/ware: settings build/structs build/webserver build/warehouse build/json
 build/prod: settings build/structs build/webserver build/producer build/json
 	${LD} build/structs.o build/webserver.o -pthread build/producer.o build/json.o -lm -o producer
 
-build: build/ware build/prod
+build/cons: settings build/structs build/webserver build/consumer build/json
+	${LD} build/structs.o build/webserver.o -pthread build/consumer.o build/json.o -lm -o consumer
+
+build: build/ware build/prod build/cons
