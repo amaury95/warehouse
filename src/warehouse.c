@@ -162,7 +162,7 @@ void *server_process(void *argv)
 
 	if(strcmp(cJSON_GetObjectItem(request, "client")->valuestring, "consumer") == 0)
 	{
-		char *product = cJSON_GetObjectItem(request, "product")->valuestring;
+		char *product = cJSON_GetObjectItem(request, "type")->valuestring;
 				 
 		if(has_product(port, product))
 		{
@@ -178,6 +178,8 @@ void *server_process(void *argv)
 		}
 		else
 			cJSON_AddStringToObject(respond, "result", "dennied");
+
+		printf("end consumer\n");
 		
 	}
 
