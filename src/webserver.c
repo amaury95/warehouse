@@ -63,9 +63,11 @@ void *client(void *argv)
   /*POLL*/  
     
   char buff[MAXLINE];
+  
   read(clientfd, buff, MAXLINE);
 
   close(clientfd);
+
   return params->process(buff);
 }
 
