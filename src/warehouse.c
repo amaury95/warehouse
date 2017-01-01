@@ -24,8 +24,8 @@ sem_t sem_capacity;
 
 //Structs to fill with tokenizer input
 int   count = 0;
-char* production_id[100];
-int   production_sz[100];
+char* production_id[STACK_MAX];
+int   production_sz[STACK_MAX];
 
 int   pcount = 0;
 char* ports[65536];
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 
 	for(int i = 3; i < argc; i++)
 	{
-		TokenizerT *tk = TKCreate(": -", argv[i]);
+		TokenizerT *tk = TKCreate(":", argv[i]);
 		production_id[count] = TKGetNextToken(tk);
 		production_sz[count++] = atoi(TKGetNextToken(tk));
 	}

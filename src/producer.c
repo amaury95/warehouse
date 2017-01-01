@@ -16,11 +16,12 @@ sem_t sem_products;
 int ppid = 1;
 
 #include "include/cJSON.h"
+#include "include/tokenizer.h"
 #include "include/webserver.h"
 #include "include/producer.h"
 
 void *generator(void *params)
-{    
+{
     while(1)
     {
         sem_wait(&sem_products);
@@ -67,7 +68,7 @@ void *singlep(void *args)
             }
 }
 
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
     //Initialize local variables
     sem_init(&sem_servers, 0, 1);
@@ -75,33 +76,32 @@ int main(int argc, char const *argv[])
 
     servers = stack_new(STACK_MAX);
     products = stack_new(STACK_MAX);
+    
+    //Tokenizer
+    for(int i = 1; i < argc; i++)
+	{
+		TokenizerT *tk = TKCreate(":", argv[i]);
+		char *tok1 = TKGetNextToken(tk);
+		char *tok2 = TKGetNextToken(tk);
 
-    //Simuling parameters
-    struct thread server;
-    server.port = "3000";
-    server.hostname = "192.168.99.100";
+        if(strstr(tok1,":"))
+        {
+            struct thread server;
+            server.hostname = tok1;
+            server.port = tok2;
 
-    stack_push(servers, &server);
- 
-    struct production prod;
-    prod.id = "A";
-    prod.generate = 2;
-    prod.pendding = 0;
+            stack_push(servers, &server);
+        }
+        else
+        {
+            struct production prod;
+            prod.id = tok1;
+            prod.generate = atoi(tok2);
+            prod.pendding = 0;
 
-    stack_push(products, &prod);
-
-    struct thread server2;
-    server2.port = "4000";
-    server2.hostname = "192.168.99.100";
-
-    stack_push(servers, &server2);
- 
-    struct production prod2;
-    prod2.id = "B";
-    prod2.generate = 3;
-    prod2.pendding = 0;
-
-    stack_push(products, &prod2);
+            stack_push(products, &prod);
+        }
+	}
 
     //Starting generator thread
     pthread_t ptid;
