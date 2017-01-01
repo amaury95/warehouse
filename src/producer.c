@@ -151,7 +151,7 @@ void *client_process(void *argv)
         {
             char *id = cJSON_GetObjectItem(response, "id")->valuestring;
 
-            sem_wait(&sem_products);
+            // sem_wait(&sem_products);
 
             for(int i = 0; i < products->pos; i++)
 
@@ -161,7 +161,7 @@ void *client_process(void *argv)
 
             printf("[  SENT  ] type : %s id : %d\n\n", id, ppid);
             
-            sem_post(&sem_products);     
+            // sem_post(&sem_products);     
                 
             *retval = 1;
         }
