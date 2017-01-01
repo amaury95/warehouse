@@ -41,8 +41,6 @@ TokenizerT *TKCreate(char *separators, char *ts) {
 	tokenizer->tsPtr = tokenizer->tsArray; // gets delims
 	tokenizer->tsPtr2 = tokenizer->tsArray; //holds starting place
 	
-	printf("Separators: %s\n", tokenizer->sepArray);
-	printf("Token String: %s\n", tokenizer->tsArray);
   return tokenizer;
 }
 

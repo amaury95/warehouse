@@ -18,25 +18,37 @@ sem_t sem_warehouse;
 sem_t sem_capacity;
 
 #include "include/cJSON.h"
+#include "include/tokenizer.h"
 #include "include/webserver.h"
 #include "include/warehouse.h"
 
 //Structs to fill with tokenizer input
-int   count = 2;
-char* production_id[] = {"A", "B"};
-int   production_sz[] = { 9 ,  100 };
+int   count = 0;
+char* production_id[100];
+int   production_sz[100];
 
-int   pcount = 1;
-char* ports[] = {"3000"};
+int   pcount = 0;
+char* ports[65536];
 
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
 	sem_init(&sem_warehouse, 0, 1);
 	sem_init(&sem_capacity, 0, 1);
 
 	warehouse = trie_new();
-	capacity.max = 200;
+	
+	ports[pcount++] = argv[1];
+
+	capacity.max = atoi(argv[2]);
 	capacity.pos = 0;
+
+
+	for(int i = 3; i < argc; i++)
+	{
+		TokenizerT *tk = TKCreate(": -", argv[i]);
+		production_id[count] = TKGetNextToken(tk);
+		production_sz[count++] = atoi(TKGetNextToken(tk));
+	}
 
 	for(int i = 0; i < pcount; i++)
 	{
