@@ -29,12 +29,9 @@ void *generator(void *params)
         for(int i = 0; i < products->pos; i++)
 
             if(((struct production *)products->elements[i])->pendding == 0)
-            {
+             
                 ((struct production *)products->elements[i])->pendding += 
-                ((struct production *)products->elements[i])->generate;   
-                for(int j = 0; j < ((struct production *)products->elements[i])->generate; j++)
-                    printf("<--> %s\n", ((struct production *)products->elements[i])->id);
-            }                      
+                ((struct production *)products->elements[i])->generate;                  
              
         sem_post(&sem_products);
         
@@ -102,7 +99,7 @@ int main(int argc, char *argv[])
             stack_push(products, prod);
         }
 	}
-    
+
     //Starting generator thread
     pthread_t ptid;
 
@@ -162,11 +159,11 @@ void *client_process(void *argv)
                  
                     ((struct production *)products->elements[i])->pendding--;
 
+            printf("[  SENT  ] type : %s id : %d\n\n", id, ppid);
+            
             sem_post(&sem_products);     
                 
             *retval = 1;
-
-            printf("---> %s\n", id);
         }
     
     return retval;

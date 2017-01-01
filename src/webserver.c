@@ -13,17 +13,6 @@
 #include "include/structs.h"
 #include "include/webserver.h"
 
-int balanced_keys(char *chain)
-{
-  int key = 0;
-
-  for(int i = 0; i < strlen(chain); i++)
-
-    key += chain[i] == '{' ? 1 : chain[i] == '}' ? -1 : 0;
-
-  return key == 0;
-}
-
 void *server(void *argv)
 {
   struct thread *params = (struct thread *)argv;

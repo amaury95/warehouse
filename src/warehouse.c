@@ -133,7 +133,7 @@ cJSON *get_product(char *port, char *product)
 		capacity.pos--;
 
 		sem_post(&sem_capacity);		
-		
+	 
 		return stack_pop(stack);
 	}
 
@@ -173,6 +173,7 @@ void *server_process(void *argv)
 
     read(connfd, buff, MAXLINE);
 	//END POLL
+	
 	request = cJSON_Parse(buff);
 
 	sem_wait(&sem_warehouse);
@@ -191,7 +192,12 @@ void *server_process(void *argv)
 			
 			cJSON_AddItemToObject(respond, "value", value);
 
-			printf("---> %s\n", product);
+			printf("[  SENT     ] type : %s id : %d\n\n", 
+					
+					cJSON_GetObjectItem(value, "name")->valuestring, 
+					
+					cJSON_GetObjectItem(value, "id")->valueint);	
+			
 		}
 		else
 			cJSON_AddStringToObject(respond, "result", "dennied");
@@ -208,8 +214,12 @@ void *server_process(void *argv)
 			cJSON_AddStringToObject(respond, "id", product);
 
 			set_product(port, product, (cJSON*)cJSON_GetObjectItem(request, "value"));
-			
-			printf("<--- %s\n", product);
+
+			printf("[  RECIBED  ] type : %s id : %d\n\n", 
+					
+					cJSON_GetObjectItem((cJSON*)cJSON_GetObjectItem(request, "value"), "name")->valuestring, 
+					
+					cJSON_GetObjectItem((cJSON*)cJSON_GetObjectItem(request, "value"), "id")->valueint);
 		}
 		else
 			cJSON_AddStringToObject(respond, "result", "dennied");

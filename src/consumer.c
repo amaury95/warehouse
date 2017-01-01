@@ -27,12 +27,9 @@ void *generator(void *params)
         for(int i = 0; i < products->pos; i++)
 
             if(((struct production *)products->elements[i])->pendding == 0)
-            {
+           
                 ((struct production *)products->elements[i])->pendding += 
-                ((struct production *)products->elements[i])->generate;   
-                for(int j = 0; j < ((struct production *)products->elements[i])->generate; j++)
-                    printf("<--> %s\n", ((struct production *)products->elements[i])->id);
-            }                      
+                ((struct production *)products->elements[i])->generate;                       
              
         sem_post(&sem_products);
         
@@ -129,7 +126,7 @@ struct product json_to_product(cJSON *json)
     strcpy(product.product_name, cJSON_GetObjectItem(json, "name")->valuestring);
     strcpy(product.provider_id, cJSON_GetObjectItem(json, "pid")->valuestring);
     strcpy(product.product_content, cJSON_GetObjectItem(json, "content")->valuestring);
-    product.product_id = cJSON_GetObjectItem(json, "pid")->valueint;
+    product.product_id = cJSON_GetObjectItem(json, "id")->valueint;
     
     return product;
 }
@@ -157,10 +154,12 @@ void *client_process(void *argv)
                     ((struct production *)products->elements[i])->pendding--;
 
             sem_post(&sem_products);     
-                
-            *retval = 1;
 
-            printf("---> %s\n", id);
+            printf("[  RECIBED  ] type : %s id : %d\n\n",
+					cJSON_GetObjectItem((cJSON*)cJSON_GetObjectItem(response, "value"), "name")->valuestring, 
+					cJSON_GetObjectItem((cJSON*)cJSON_GetObjectItem(response, "value"), "id")->valueint);
+
+            *retval = 1;
         }
     
     return retval;
