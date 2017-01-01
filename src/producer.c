@@ -84,25 +84,25 @@ int main(int argc, char *argv[])
 		char *tok1 = TKGetNextToken(tk);
 		char *tok2 = TKGetNextToken(tk);
 
-        if(strstr(tok1,":"))
+        if(strstr(tok1,"."))
         {
-            struct thread server;
-            server.hostname = tok1;
-            server.port = tok2;
+            struct thread *server = malloc(sizeof(struct thread));
+            server->hostname = tok1;
+            server->port = tok2;
 
-            stack_push(servers, &server);
+            stack_push(servers, server);
         }
         else
         {
-            struct production prod;
-            prod.id = tok1;
-            prod.generate = atoi(tok2);
-            prod.pendding = 0;
+            struct production *prod = malloc(sizeof(struct production));
+            prod->id = tok1;
+            prod->generate = atoi(tok2);
+            prod->pendding = 0;
 
-            stack_push(products, &prod);
+            stack_push(products, prod);
         }
 	}
-
+    
     //Starting generator thread
     pthread_t ptid;
 
