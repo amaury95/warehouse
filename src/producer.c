@@ -41,9 +41,11 @@ void *generator(void *params)
 
 void *singlep(void *args)
 {
-    int i = *((int *)args);
+    int i = *((int *)args), flag;
 
     while(1)
+    {
+        flag = 0;
 
         if(((struct production *)products->elements[i])->pendding > 0)
                 
@@ -61,8 +63,10 @@ void *singlep(void *args)
                 args.request = conform_request(product);
                 args.process = client_process;
 
-                if( *(int *)client(&args) ) { ppid ++; break; }
+                if( *(int *)client(&args) ) { ppid ++; flag = 1; break; }
             }
+        if(!flag) nanosleep((const struct timespec[]){{0, 150000000L}}, NULL);
+    }
 }
 
 int main(int argc, char *argv[])
