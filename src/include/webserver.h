@@ -2,7 +2,7 @@
 #define WEBSERVER_H
 
 #define SIZE_LISTEN_QUEUE 1024
-#define MAXLINE 4096
+#define MAXLINE 5120
 
 void *server(void *);
 void *client(void *);
