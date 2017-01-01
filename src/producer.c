@@ -155,11 +155,15 @@ void *client_process(void *argv)
         {
             char *id = cJSON_GetObjectItem(response, "id")->valuestring;
 
+            sem_wait(&sem_products);
+
             for(int i = 0; i < products->pos; i++)
 
                 if(strcmp(((struct production *)products->elements[i])->id, id) == 0)
                  
                     ((struct production *)products->elements[i])->pendding--;
+
+            sem_post(&sem_products);
 
             printf("[  SENT  ] type : %s id : %d\n\n", id, ppid);
             
